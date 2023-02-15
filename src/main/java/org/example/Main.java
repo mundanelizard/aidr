@@ -1,27 +1,34 @@
 package org.example;
 
-import java.util.Arrays;
-
 public class Main {
+    static final String TRAIN = "train.csv";
+    static final String TEST = "test.csv";
+
     public static void main(String[] args) throws Exception {
         var knn = new KNN();
+        train(knn);
         System.out.println("Euclidean Distance");
-        var doubleFoldAccuracy = calculateDoubleFoldAccuracy(knn);
-        System.out.printf("Double Fold Accuracy: %.6f%%\n", doubleFoldAccuracy);
-        var singleAccuracy = calculateSingleAccuracy(knn);
-        System.out.printf("Single Fold Accuracy: %.6f%%\n", singleAccuracy);
+        System.out.printf("Double Fold Accuracy: %.6f%%\n", calculateDoubleFoldAccuracy(knn));
+        System.out.printf("Accuracy: %.6f%%\n", calculateSingleAccuracy(knn));
 
-        System.out.println("\n\nSupport Vector Machines ");
         var mcsvm = new MCSVM();
-        doubleFoldAccuracy = calculateDoubleFoldAccuracy(mcsvm);
-        System.out.printf("Double Fold Accuracy: %.6f%%\n", doubleFoldAccuracy);
-        singleAccuracy = calculateSingleAccuracy(mcsvm);
-        System.out.printf("Single Fold Accuracy: %.6f%%\n", singleAccuracy);
+        train(mcsvm);
+        System.out.println("\n\nSupport Vector Machines ");
+        System.out.printf("Double Fold Accuracy: %.6f%%\n", calculateDoubleFoldAccuracy(mcsvm));
+        System.out.printf("Accuracy: %.6f%%\n", calculateSingleAccuracy(mcsvm));
+    }
 
+    public static void train(Classifier classifier) throws Exception {
+        var digits = Reader.readInput(TRAIN);
+
+        var features = digits.features();
+        var labels = digits.labels();
+
+        classifier.train(features, labels);
     }
 
     public static double calculateSingleAccuracy(Classifier classifier) throws Exception {
-        var digits = Reader.readInput("train.csv");
+        var digits = Reader.readInput(TEST);
 
         var features = digits.features();
         var labels = digits.labels();
@@ -33,24 +40,13 @@ public class Main {
 
 
     public static double calculateDoubleFoldAccuracy(Classifier classifier) throws Exception {
-        var digits = Reader.readInput("test.csv");
-
-        var features = digits.features();
-        var labels = digits.labels();
-
-        classifier.train(features, labels);
-
-        var output = test(labels, features, classifier);
+        var train = Reader.readInput(TRAIN);
+        var output = test(train.labels(), train.features(), classifier);
         var total = output[0];
         var correct = output[1];
 
-        digits = Reader.readInput("train.csv");
-
-        features = digits.features();
-        labels = digits.labels();
-
-        output = test(labels, features, classifier);
-
+        var test = Reader.readInput(TEST);
+        output = test(test.labels(), test.features(), classifier);
         total += output[0];
         correct += output[1];
 

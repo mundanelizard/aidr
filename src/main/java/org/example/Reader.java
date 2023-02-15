@@ -6,6 +6,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class Reader {
+    /**
+     * Reads and parses inputs from a file.
+     * @param name file name
+     * @return a features, labels pair.
+     * @throws Exception if file doesn't exist.
+     */
     public static Input readInput(String name) throws Exception {
         String[] lines = Files.readString(Paths.get(name)).trim().split("\n");
 
@@ -15,8 +21,7 @@ public class Reader {
         for (int i = 0; i < lines.length; i++) {
             var line = lines[i];
             var rawFeatures = line.split(",");
-            var f = convertStringArrayToIntArray(rawFeatures, rawFeatures.length - 1);
-            features[i] = f;
+            features[i] = convertStringArrayToIntArray(rawFeatures, rawFeatures.length - 1);
             var rawLabel = rawFeatures[rawFeatures.length - 1];
             labels[i] = Integer.parseInt(rawLabel.trim());
         }
@@ -24,6 +29,13 @@ public class Reader {
         return new Input(features, labels);
     }
 
+    /**
+     * Converts strings array to int array.
+     * @param rawFeatures string array of features.
+     * @param length expected length of features.
+     * @return a new array with the features
+     * @throws Exception if the length doesn't match the feature length
+     */
     static int[] convertStringArrayToIntArray(String[] rawFeatures, int length) throws Exception {
         if (length > rawFeatures.length) {
             throw new Exception("Invalid argument length.");
