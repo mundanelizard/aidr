@@ -5,10 +5,19 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) throws Exception {
         var knn = new KNN();
+        System.out.println("Euclidean Distance");
         var doubleFoldAccuracy = calculateDoubleFoldAccuracy(knn);
         System.out.printf("Double Fold Accuracy: %.6f%%\n", doubleFoldAccuracy);
         var singleAccuracy = calculateSingleAccuracy(knn);
         System.out.printf("Single Fold Accuracy: %.6f%%\n", singleAccuracy);
+
+        System.out.println("\n\nSupport Vector Machines ");
+        var mcsvm = new MCSVM();
+        doubleFoldAccuracy = calculateDoubleFoldAccuracy(mcsvm);
+        System.out.printf("Double Fold Accuracy: %.6f%%\n", doubleFoldAccuracy);
+        singleAccuracy = calculateSingleAccuracy(mcsvm);
+        System.out.printf("Single Fold Accuracy: %.6f%%\n", singleAccuracy);
+
     }
 
     public static double calculateSingleAccuracy(Classifier classifier) throws Exception {
